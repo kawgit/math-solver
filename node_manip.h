@@ -17,8 +17,10 @@ Leaf* arith_simplify(const Node* node);
 // will simplify all arith nested ROOT (can have types other than NUMBER) 
 Node* arith_clean(const Node* node);
 
+Node* remove_associative_duplicates(const Node* node);
+
 bool identical(const Node* node1, const Node* node2);
 
 Node* identity_sub(const Equation identity, const Node* target);
 
-Hash get_hash(const Node* node);
+Root* replace_child(const Node* node, int i, const Node* child);

@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <cassert>
 
 using namespace std;
 
@@ -39,6 +40,10 @@ map<Leaf_Type, string> lt_str = {
 };
 
 string to_string(const Node* node) {
+	if (!node) {
+		return "NULLNODE";
+	}
+
 	switch (node->type) {
 		case LEAF: {
 			const Leaf* cast_node = TO_CLP(node);
@@ -47,7 +52,8 @@ string to_string(const Node* node) {
 		case ROOT: {
 			const Root* cast_node = TO_CRP(node);
 			string result = rt_str[cast_node->rt] + "(";
-			for (int i = 0; i < cast_node->children.size() - 1; i++) {
+			if (cast_node->children.size() == 0) return result + ")";
+			for (int i = 0; i + 1 < cast_node->children.size(); i++) {
 				result += to_string(cast_node->children[i]) + ",";
 			}
 			return result + to_string(cast_node->children.back()) + ")";
@@ -55,12 +61,13 @@ string to_string(const Node* node) {
 	}
 }
 
-void Node::init_storage(int reserve_size) {
-	Root::node_storage.reserve(reserve_size);
-	Leaf::node_storage.reserve(reserve_size);
+void Node::init_storage() {
+	Root::node_storage.reserve(RESERVE_SIZE);
+	Leaf::node_storage.reserve(RESERVE_SIZE);
 }
 
 Root* Root::make_root(Root_Type rt_) {
+	assert(Root::node_storage.size() + 1 < RESERVE_SIZE);
 	Root::node_storage.emplace_back(rt_);
 	return &Root::node_storage.back();
 }
@@ -100,11 +107,13 @@ Node* Root::clone() const {
 }
 
 Leaf* Leaf::make_leaf(double value_) {
+	assert(Leaf::node_storage.size() + 1 < RESERVE_SIZE);
 	Leaf::node_storage.emplace_back(value_);
 	return &Leaf::node_storage.back();
 }
 
 Leaf* Leaf::make_leaf(string var_name, Leaf_Type lt_) {
+	assert(Leaf::node_storage.size() + 1 < RESERVE_SIZE);
 	Leaf::node_storage.emplace_back(var_name, lt_);
 	return &Leaf::node_storage.back();
 }

@@ -53,6 +53,8 @@ Leaf* arith_simplify(const Node* node) {
 }
 
 Node* arith_clean(const Node* node) {
+	assert(node);
+
 	if (is_arith(node)) {
 		return arith_simplify(node);
 	}
@@ -118,17 +120,20 @@ void var_sub(const Equation equ, Node*& target) {
 }
 
 bool check_identity_sub(System& sys, const Node* plan, const Node* target) {
-	// cout << to_string(plan) << "into" << to_string(target) << endl;
 	switch (plan->type) {
 		case LEAF: {
-			const Node* value = sys.get_value(TO_CLP(plan));
-			if (!value) {
-				sys.equations.emplace_back(plan, EQU, target);
-				// cout << to_string(sys.equations.back()) << endl;
-				return true;
+			if (TO_CLP(plan)->lt != NUMBER) {
+				const Node* value = sys.get_value(TO_CLP(plan));
+				if (!value) {
+					sys.equations.emplace_back(plan, EQU, target);
+					return true;
+				}
+				else {
+					return identical(value, target); 
+				}
 			}
 			else {
-				return identical(value, target); 
+				return TO_CLP(target)->lt == NUMBER && TO_CLP(plan)->value == TO_CLP(target)->value;
 			}
 		}
 		case ROOT: {
@@ -152,13 +157,31 @@ Node* identity_sub(const Equation identity, const Node* target) {
 		return nullptr;
 	}
 	Node* result = identity.child2->clone();
-	for (Equation& equ : sys.equations) cout << to_string(equ) << endl;
 	for (Equation& equ : sys.equations) {
 		var_sub(equ, result);
 	}
 	return result;
 }
 
-Hash get_hash(const Node* node) {
-	return 0;
+
+Root* replace_child(const Node* node, int target_index, const Node* child) {
+	assert(node->type == ROOT);
+	assert(TO_CRP(node)->children.size() != 0);
+	const Root* cast = TO_CRP(node);
+
+	Root* result = Root::make_root(cast->rt);
+	for (int i = 0; i < cast->children.size(); i++) {
+		if (i == target_index) {
+			result->children.push_back(child);
+		}
+		else {
+			result->children.push_back(cast->children[i]);
+		}
+	}
+
+	return result;
+}
+
+Node* remove_associative_duplicates(const Node* node) {
+	return nullptr;
 }

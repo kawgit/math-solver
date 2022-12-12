@@ -22,6 +22,8 @@ string to_string(const vector<Token>& tokens);
 
 vector<Token> tokenize(string expr_str);
 
+vector<Token> shunt(vector<Token> tokens);
+
 Node* to_node(const vector<Token>& tokens);
 
 Equation to_equation(string str);

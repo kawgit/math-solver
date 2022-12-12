@@ -12,7 +12,7 @@ map<Relation_Type, string> rel_str = {
 };
 
 string to_string(Equation equ) {
-    return to_string(equ.child1) + " " + rel_str[equ.rel_type] + " " + to_string(equ.child2);
+    return "EQU {" + to_string(equ.child1) + " " + rel_str[equ.rel_type] + " " + to_string(equ.child2) + "}";
 }
 
 const Node* System::get_value(const Leaf* leaf) {

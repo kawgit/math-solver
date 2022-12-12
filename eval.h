@@ -3,6 +3,6 @@
 
 typedef int Eval;
 
-int count_funcs(const Node* node);
+int count_leafs(const Node* node);
 
 Eval simp_eval(Equation& equ);

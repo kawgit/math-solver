@@ -101,11 +101,11 @@ Token pop_token(string& expr_str) {
 }
 
 string to_string(const vector<Token>& tokens) {
-	string result = "";
+	string result = "LIST {";
 	for (Token token : tokens) {
 		result += token.str + " ";
 	}
-	return result;
+	return result + "}";
 }
 
 vector<Token> tokenize(string expr_str) {
@@ -113,6 +113,25 @@ vector<Token> tokenize(string expr_str) {
 	expr_str = remove_char(expr_str, ',');
 	expr_str = remove_char(expr_str, '\n');
 	expr_str = remove_char(expr_str, '\r');
+
+	// a-b -> a+-b
+
+	for (int i = expr_str.size() - 1; i >= 1; i--) {
+		if (expr_str[i] == '-') {
+			switch (expr_str[i - 1]) {
+				case '+':
+				case '-':
+				case '*':
+				case '/':
+				case '^':
+				case '(':
+					break;
+				default:
+					expr_str = expr_str.substr(0, i) + '+' + expr_str.substr(i);
+					break;
+			}
+		}
+	}
 
 	vector<Token> op_stack;
 	vector<Token> out_queue;
@@ -142,7 +161,7 @@ vector<Token> tokenize(string expr_str) {
 				op_stack.pop_back();
 				break;
 				
-			defualt:
+			default:
 				assert(false);
 		}
 	}
@@ -156,8 +175,6 @@ vector<Token> tokenize(string expr_str) {
 }
 
 Node* to_node(const vector<Token>& tokens) {
-	cout << "tokens: " << to_string(tokens) << endl;
-
 	assert(tokens.size());
 	assert(tokens.back().tt != RELATION_TOKEN);
 
@@ -193,7 +210,6 @@ Node* to_node(const vector<Token>& tokens) {
 
 		if (needed_operands == 0) {
 			const vector<Token> subset(tokens.begin() + i, tokens.begin() + greatest_operator_index);
-			cout << "subset:" << to_string(subset) << endl;
 			children.insert(children.begin(), to_node(subset));
 			greatest_operator_index = i;
 			needed_operands = 1;
@@ -206,6 +222,7 @@ Node* to_node(const vector<Token>& tokens) {
 }
 
 Equation to_equation(string str) {
+
 	int rel_token_index = -1;
 	Relation_Type rel_token_type;
 	for (auto itr = str_rel.begin(); itr != str_rel.end(); itr++) {

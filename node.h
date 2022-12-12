@@ -25,7 +25,7 @@ extern map<Leaf_Type, string> lt_str;
 class Node {
 	public:
 		Node_Type type;
-		static void init_storage(int reserve_size);
+		static void init_storage();
 		virtual Node* clone() const { return nullptr; };
 		
 };
@@ -42,8 +42,6 @@ class Root : public Node {
 		}
 		
 		static Root* make_root(Root_Type rt_);
-
-	private:
 		static vector<Root> node_storage;
 
 	public:
@@ -85,8 +83,8 @@ class Leaf : public Node {
 		static Leaf* make_leaf(string var_name, Leaf_Type lt_);
 
 		static map<double, string> id_to_name;
-	private:
 		static vector<Leaf> node_storage;
+	private:
 		static map<string, double> name_to_id;
 		
 	public:
@@ -95,3 +93,6 @@ class Leaf : public Node {
 
 		Node* clone() const;
 };
+
+const static size_t RESERVE_SIZE = 100000000;
+const static size_t MB_MEM_NEEDED = (RESERVE_SIZE*sizeof(Leaf) + RESERVE_SIZE*sizeof(Root))/1000000;
