@@ -23,4 +23,4 @@ main.exe: comp.o eval.o identities.o move.o node_manip.o node.o parse.o search.o
 	clang++ -Ofast comp.o eval.o identities.o move.o node_manip.o node.o parse.o search.o system.o main.cpp -o main.exe
 
 clean: 
-	del *.o
+	rm *.o

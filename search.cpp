@@ -30,7 +30,7 @@ Search_Result simp_search(System& sys, Equation equ, int depth) {
 
                 altered_node = arith_clean(altered_node);
 
-                if (depth == 3) cout << to_string(node) << "move: " << to_string(move) << " altered: " << to_string(altered_node) << endl;
+                // if (depth == 3) cout << to_string(node) << "move: " << to_string(move) << " altered: " << to_string(altered_node) << endl;
 
                 Search_Result search_result = simp_search(sys, Equation(altered_node, EQU, equ.child2), depth - 1);
                 

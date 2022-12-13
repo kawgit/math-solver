@@ -23,14 +23,22 @@ map<Root_Type, int> rt_operands = {
 };
 
 map<Root_Type, string> rt_str = {
-	{ADD, "ADD"},
-	{NEG, "NEG"},
-	{MUL, "MUL"},
-	{DIV, "DIV"},
-	{POW, "POW"},
-	{SIN, "SIN"},
-	{COS, "COS"},
-	{TAN, "TAN"},
+	{ADD, "+"},
+	{NEG, "-"},
+	{MUL, "*"},
+	{DIV, "/"},
+	{POW, "^"},
+	{SIN, "sin"},
+	{COS, "cos"},
+	{TAN, "tan"},
+	// {ADD, "ADD"},
+	// {NEG, "NEG"},
+	// {MUL, "MUL"},
+	// {DIV, "DIV"},
+	// {POW, "POW"},
+	// {SIN, "SIN"},
+	// {COS, "COS"},
+	// {TAN, "TAN"},
 };
 
 map<Leaf_Type, string> lt_str = {
@@ -51,12 +59,23 @@ string to_string(const Node* node) {
 		}
 		case ROOT: {
 			const Root* cast_node = TO_CRP(node);
-			string result = rt_str[cast_node->rt] + "(";
-			if (cast_node->children.size() == 0) return result + ")";
-			for (int i = 0; i + 1 < cast_node->children.size(); i++) {
-				result += to_string(cast_node->children[i]) + ",";
+
+			if (rt_str[cast_node->rt].size() == 1) {
+				string result = "(";
+				if (cast_node->children.size() == 0) return result + ")";
+				for (int i = 0; i + 1 < cast_node->children.size(); i++) {
+					result += to_string(cast_node->children[i]) + " " + rt_str[cast_node->rt] + " ";
+				}
+				return result + to_string(cast_node->children.back()) + ")";
 			}
-			return result + to_string(cast_node->children.back()) + ")";
+			else {
+				string result = rt_str[cast_node->rt] + "(";
+				if (cast_node->children.size() == 0) return result + ")";
+				for (int i = 0; i + 1 < cast_node->children.size(); i++) {
+					result += to_string(cast_node->children[i]) + ",";
+				}
+				return result + to_string(cast_node->children.back()) + ")";
+			}
 		}
 	}
 }

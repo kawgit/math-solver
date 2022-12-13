@@ -13,19 +13,14 @@ int main() {
 	Node::init_storage();
 	load_identities("identities.txt");
 
-	string str = "(x+2)*(x+3+3+3-10*x)=0";
+	string str = "x*(2+1/x) * x=0";
 	Equation equ = to_equation(str);
-	cout << "main:" << to_string(equ) << endl;
+	cout << to_string(equ.child1) << endl;
 
 	System sys;
 	equ.child1 = arith_clean(equ.child1);
 
-	cout << to_string(equ.child1) << endl;
-
-	Search_Result sr = simp_search(sys, equ, 3);
-	cout << "main:" << to_string(sr) << endl;
-	cout << "final:" << to_string(sr.leaf) << endl;
-	cout << "end " << to_string(equ.child1) << endl;
+	Search_Result sr = simp_search(sys, equ, 5);
 
 	Node* curr = equ.child1->clone();
 	cout << to_string(curr) << endl;

@@ -35,12 +35,12 @@ void load_identities(string path) {
         {
             replace_common_symbols(line);
             identities.emplace_back(to_equation(line));
-            cout << "loaded identity: " + line + " -> " + to_string(identities.back()) << endl;
+            // cout << "loaded identity: " + line + " -> " + to_string(identities.back()) << endl;
         }
     }
     else {
         cout << "could not open file " << path << endl;
     }
-    cout << "finished loading identities" << endl;
+    // cout << "finished loading identities" << endl;
 }
 
